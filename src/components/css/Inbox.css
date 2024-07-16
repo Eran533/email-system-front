@@ -1,5 +1,5 @@
 .full-width-header {
-  width: 100%;
+  width: 97%;
   padding: 20px;
   background-color: #f1f1f1;
   display: flex;
@@ -47,6 +47,9 @@
   border-radius: 5px;
   background-color: white;
   transition: box-shadow 0.3s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .email-item:hover {
@@ -54,21 +57,70 @@
 }
 
 .email-item h3 {
-  margin: 0 0 10px 0;
+  margin: 0 0 5px;
   font-size: 18px;
   color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .email-item p {
   margin: 0;
   color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mail-container {
+  width: calc(100% - 305px);
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  float: right;
 }
 
 .inbox-container {
-  width: 280px;
+  width: 300px;
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   float: left;
+}
+
+.email-details {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  max-height: 400px; /* Adjust max height as needed */
+  word-wrap: break-word;
+}
+
+.email-details h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.email-details h3 {
+  font-size: 16px;
+  color: #555;
+}
+
+.email-details p {
+  margin-top: 10px;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+
+.input-search {
+  margin-bottom: 10px;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 300px; /* Adjust width as needed */
 }

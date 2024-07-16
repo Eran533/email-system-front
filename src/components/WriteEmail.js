@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./css/WriteEmailModal.css"; // Import your CSS for styling
+import "./css/WriteEmailModal.css";
 
-function WriteEmail({ closeModal }) {
+function WriteEmail({ closeModal, updateEmails }) {
   const [formData, setFormData] = useState({
     recipient: "",
     subject: "",
@@ -28,42 +28,30 @@ function WriteEmail({ closeModal }) {
           },
         }
       );
-      console.log(res.data);
       navigate("/inbox");
-      closeModal(); // Close modal after sending
+      closeModal();
+      updateEmails(); // Call updateEmails to fetch the latest emails
     } catch (err) {
       console.error(err.response.data);
     }
   };
 
   const handleSend = () => {
-    setFormData({ ...formData, status: "sent" }); // Update status to "sent"
-    onSubmit(); // Call onSubmit function manually
+    setFormData({ ...formData, status: "sent" });
+    onSubmit();
   };
 
   const handleSaveAsDraft = () => {
-    setFormData({ ...formData, status: "draft" }); // Update status to "draft"
-    onSubmit(); // Call onSubmit function manually
+    setFormData({ ...formData, status: "draft" });
+    onSubmit();
   };
 
   return (
     <div className="modal">
       <div className="modal-content">
-        <div className="button-group">
-          <button type="button" onClick={handleSend}>
-            Send
-          </button>
-          <button
-            type="button"
-            onClick={handleSaveAsDraft}
-            className="cancel-button"
-          >
-            Save as Draft
-          </button>
-          <span className="close" onClick={closeModal}>
-            &times;
-          </span>
-        </div>
+        <span className="close" onClick={closeModal}>
+          &times;
+        </span>
         <form onSubmit={(e) => e.preventDefault()} className="write-email-form">
           <h2>Write Email</h2>
           <input
@@ -89,6 +77,26 @@ function WriteEmail({ closeModal }) {
             placeholder="Message"
             required
           ></textarea>
+          <div className="button-group">
+            <div className="left-buttons">
+              <button
+                type="button"
+                className="send-button"
+                onClick={handleSend}
+              >
+                Send
+              </button>
+            </div>
+            <div className="right-buttons">
+              <button
+                type="button"
+                className="cancel-button"
+                onClick={handleSaveAsDraft}
+              >
+                Save as Draft
+              </button>
+            </div>
+          </div>
         </form>
       </div>
     </div>

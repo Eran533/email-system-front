@@ -16,7 +16,8 @@
 .modal-content {
   background-color: #fefefe; /* White background */
   padding: 20px;
-  max-width: 1400px; /* Adjust width as needed */
+  max-width: 600px; /* Adjust width as needed */
+  width: 100%; /* Ensure it takes full width up to max-width */
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -25,10 +26,12 @@
 /* Close button (X) */
 .close {
   color: #aaa;
-  float: right;
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 20px;
 }
 
 .close:hover,
@@ -65,27 +68,36 @@
 /* Button group at the bottom */
 .button-group {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.button-group .left-buttons,
+.button-group .right-buttons {
+  display: flex;
+  gap: 10px; /* Add space between buttons */
 }
 
 .button-group button {
   padding: 10px 15px;
-  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.button-group button:hover {
-  background-color: #45a049;
+.button-group .send-button {
+  background-color: #008cba;
 }
 
-.cancel-button {
+.button-group .send-button:hover {
+  background-color: #007bb5; /* Darker blue on hover */
+}
+
+.button-group .cancel-button {
   background-color: #f44336; /* Red color for cancel button */
 }
 
-.cancel-button:hover {
+.button-group .cancel-button:hover {
   background-color: #d32f2f; /* Darker red on hover */
 }

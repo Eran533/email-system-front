@@ -1,43 +1,89 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { FaInbox, FaPaperPlane, FaDraftingCompass } from "react-icons/fa";
 import "./css/Inbox.css";
 import WriteEmail from "./WriteEmail";
 
 function Inbox() {
   const [sentEmails, setSentEmails] = useState([]);
-  const [recivedEmails, setRecivedEmails] = useState([]);
+  const [sentEmailsOriginal, setSentOriginalEmails] = useState([]);
+  const [receivedEmailsOriginal, setReceivedEmailsOriginal] = useState([]);
+  const [receivedEmails, setReceivedEmails] = useState([]);
+  const [draftEmailsOriginal, setDraftEmailsOriginal] = useState([]);
   const [draftEmails, setDraftEmails] = useState([]);
-  const [sentEmailsInbox, setSentEmailsInbox] = useState(true);
+  const [sentEmailsInbox, setSentEmailsInbox] = useState(false);
   const [draftEmailsInbox, setDraftEmailsInbox] = useState(false);
-  const [recivedEmailsInbox, setRecivedEmailsInbox] = useState(false);
+  const [receivedEmailsInbox, setReceivedEmailsInbox] = useState(true);
   const [showWriteEmailModal, setShowWriteEmailModal] = useState(false);
-  const navigate = useNavigate();
+  const [selectedEmail, setSelectedEmail] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const fetchEmails = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/api/emails/inbox", {
-          headers: {
-            "x-auth-token": localStorage.getItem("token"),
-          },
-        });
-        console.log(res);
-        const sentEmails = res.data.sent;
-        const receivedEmails = res.data.received;
-        const draftEmails = res.data.sent.filter(
-          (email) => email.status === "draft"
-        );
-        setSentEmails(sentEmails);
-        setRecivedEmails(receivedEmails);
-        setDraftEmails(draftEmails);
-      } catch (err) {
-        console.error(err.response.data);
-      }
-    };
-    fetchEmails();
+    fetchEmails(); // Initial fetch of emails on component mount
   }, []);
+
+  const fetchEmails = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/emails/inbox", {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+        },
+      });
+      const { sent, received } = res.data;
+      const draftEmails = sent.filter((email) => email.status === "draft");
+      setSentEmails(sent);
+      setSentOriginalEmails(sent);
+      setReceivedEmails(received);
+      setReceivedEmailsOriginal(received);
+      setDraftEmails(draftEmails);
+      setDraftEmailsOriginal(draftEmails);
+    } catch (err) {
+      console.error(err.response.data);
+    }
+  };
+
+  const updateEmails = async () => {
+    try {
+      await fetchEmails(); // Call fetchEmails to update the emails
+    } catch (err) {
+      console.error(err.response.data);
+    }
+  };
+
+  const handleSearchSent = (event) => {
+    const { value } = event.target;
+    setSearchTerm(value);
+    if (sentEmailsInbox) {
+      if (value.trim() === "") {
+        setSentEmails(sentEmailsOriginal); // Assuming sentEmailsOriginal is your original list of emails
+      } else {
+        const filteredMails = sentEmails.filter((mail) =>
+          mail.subject.toLowerCase().includes(value.toLowerCase())
+        );
+        setSentEmails(filteredMails);
+      }
+    }
+    if (receivedEmailsInbox) {
+      if (value.trim() === "") {
+        setReceivedEmails(receivedEmailsOriginal); // Assuming sentEmailsOriginal is your original list of emails
+      } else {
+        const filteredMails = receivedEmails.filter((mail) =>
+          mail.subject.toLowerCase().includes(value.toLowerCase())
+        );
+        setReceivedEmails(filteredMails);
+      }
+    }
+    if (draftEmailsInbox) {
+      if (value.trim() === "") {
+        setDraftEmails(draftEmailsOriginal);
+      } else {
+        const filteredMails = draftEmails.filter((mail) =>
+          mail.subject.toLowerCase().includes(value.toLowerCase())
+        );
+        setDraftEmails(filteredMails);
+      }
+    }
+  };
 
   const handleWriteMail = () => {
     setShowWriteEmailModal(true); // Show modal on click
@@ -45,24 +91,31 @@ function Inbox() {
 
   const handleInbox = () => {
     setSentEmailsInbox(true);
-    setRecivedEmailsInbox(false);
+    setReceivedEmailsInbox(false);
     setDraftEmailsInbox(false);
+    setSelectedEmail(null); // Clear selected email when switching tabs
   };
 
-  const handleRecived = () => {
+  const handleReceived = () => {
     setSentEmailsInbox(false);
-    setRecivedEmailsInbox(true);
+    setReceivedEmailsInbox(true);
     setDraftEmailsInbox(false);
+    setSelectedEmail(null); // Clear selected email when switching tabs
   };
 
   const handleDrafts = () => {
     setSentEmailsInbox(false);
-    setRecivedEmailsInbox(false);
+    setReceivedEmailsInbox(false);
     setDraftEmailsInbox(true);
+    setSelectedEmail(null); // Clear selected email when switching tabs
   };
 
   const closeModal = () => {
     setShowWriteEmailModal(false); // Close modal function
+  };
+
+  const handleEmailClick = (email) => {
+    setSelectedEmail(email); // Set the selected email
   };
 
   return (
@@ -70,8 +123,8 @@ function Inbox() {
       <div className="full-width-header">
         <div className="nav-buttons">
           <button
-            onClick={handleRecived}
-            className={recivedEmailsInbox ? "active" : ""}
+            onClick={handleReceived}
+            className={receivedEmailsInbox ? "active" : ""}
           >
             <FaInbox /> Inbox
           </button>
@@ -88,6 +141,14 @@ function Inbox() {
             <FaDraftingCompass /> Outbox
           </button>
         </div>
+        <input
+          type="text"
+          placeholder="Search mail by subject..."
+          value={searchTerm}
+          className="input-search"
+          onChange={handleSearchSent}
+          style={{ marginBottom: "10px" }}
+        />
         <button onClick={handleWriteMail} className="write-mail-btn">
           New Mail
         </button>
@@ -95,24 +156,36 @@ function Inbox() {
       <div className="inbox-container">
         {sentEmailsInbox && (
           <>
-            <h2>Sent Mails</h2>
+            <h2>Sent</h2>
             <ul className="email-list">
               {sentEmails.map((email) => (
-                <li key={email._id} className="email-item">
-                  <h3>{email.subject}</h3>
+                <li
+                  key={email._id}
+                  className="email-item"
+                  onClick={() => handleEmailClick(email)}
+                >
                   <h3>{email.recipient}</h3>
+                  <h3>{email.subject}</h3>
                   <p>{email.message}</p>
                 </li>
               ))}
             </ul>
           </>
         )}
-        {recivedEmailsInbox && (
+        {receivedEmailsInbox && (
           <>
-            <h2>received Mails</h2>
+            <h2>Inbox</h2>
             <ul className="email-list">
-              {recivedEmails.map((email) => (
-                <li key={email._id} className="email-item">
+              {receivedEmails.map((email) => (
+                <li
+                  key={email._id}
+                  className="email-item"
+                  onClick={() => handleEmailClick(email)}
+                >
+                  <h3>
+                    {email.firstName}
+                    {email.lastName}
+                  </h3>
                   <h3>{email.subject}</h3>
                   <p>{email.message}</p>
                 </li>
@@ -122,9 +195,15 @@ function Inbox() {
         )}
         {draftEmailsInbox && (
           <>
+            <h1>Draft</h1>
             <ul className="email-list">
               {draftEmails.map((email) => (
-                <li key={email._id} className="email-item">
+                <li
+                  key={email._id}
+                  className="email-item"
+                  onClick={() => handleEmailClick(email)}
+                >
+                  <h3>{email.recipient}</h3>
                   <h3>{email.subject}</h3>
                   <p>{email.message}</p>
                 </li>
@@ -133,14 +212,22 @@ function Inbox() {
           </>
         )}
       </div>
+      <div className="mail-container">
+        {selectedEmail && (
+          <div className="email-details">
+            <h3>To: {selectedEmail.recipient}</h3>
+            <h2>{selectedEmail.subject}</h2>
+            <p>{selectedEmail.message}</p>
+          </div>
+        )}
+      </div>
       {showWriteEmailModal && (
         <div className="modal">
           <div className="modal-content">
             <span className="close" onClick={closeModal}>
               &times;
             </span>
-            <WriteEmail closeModal={closeModal} />{" "}
-            {/* Pass closeModal function as prop */}
+            <WriteEmail closeModal={closeModal} updateEmails={updateEmails} />
           </div>
         </div>
       )}
