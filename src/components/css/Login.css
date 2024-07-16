@@ -1,0 +1,67 @@
+.login-form {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-form h2 {
+  text-align: center;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.login-form .forgot-password {
+  display: block;
+  text-align: right;
+  margin-bottom: 10px;
+  color: blue;
+}
+
+.btn-group {
+  display: flex;
+  align-items: center; /* Align items vertically */
+}
+
+.btn-divider {
+  margin: 0 5px; /* Increased spacing around the divider */
+  font-size: 30px; /* Increased font size of the divider */
+}
+
+.login-btn,
+.register-btn {
+  flex: 1; /* Equal width for buttons */
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login-btn {
+  background-color: #008cba;
+  color: white;
+}
+
+.register-btn {
+  background-color: #008cba;
+  color: white;
+}
+
+.btn-group button:hover {
+  opacity: 0.8;
+}

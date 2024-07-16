@@ -12,6 +12,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/inbox" element={<Inbox />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/write-email" element={<WriteEmail />} />
       </Routes>
     </Router>
   );
