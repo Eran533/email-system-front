@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "./css/Login.css";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -34,54 +35,42 @@ function Login() {
   };
 
   return (
-    <form onSubmit={onSubmit} style={{ maxWidth: "400px", margin: "auto" }}>
-      <h2 style={{ textAlign: "center" }}>Login</h2>
+    <form onSubmit={onSubmit} className="login-form">
+      <h2>WELCOME</h2>
+      <label>Email:</label>
       <input
         type="email"
         name="email"
         value={email}
         onChange={onChange}
-        placeholder="Email"
-        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+        placeholder="some@email.com"
         required
       />
+      <label>Password:</label>
       <input
         type="password"
         name="password"
         value={password}
         onChange={onChange}
-        placeholder="Password"
-        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+        placeholder="*******"
         required
       />
-      <button
-        type="submit"
-        style={{
-          width: "100%",
-          padding: "10px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        Login
-      </button>
-      <p></p>
-      <button
-        type="submit"
-        style={{
-          width: "100%",
-          padding: "10px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-        onClick={handleRegisterBtn}
-      >
-        Register
-      </button>
+      <a href="#" className="forgot-password">
+        Forgot your password?
+      </a>
+      <div className="btn-group">
+        <button type="submit" className="login-btn">
+          Login
+        </button>
+        <span className="btn-divider">/</span>
+        <button
+          type="button"
+          className="register-btn"
+          onClick={handleRegisterBtn}
+        >
+          Register
+        </button>
+      </div>
     </form>
   );
 }

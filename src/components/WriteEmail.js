@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "./css/WriteEmailModal.css"; // Import your CSS for styling
 
-function WriteEmail() {
+function WriteEmail({ closeModal }) {
   const [formData, setFormData] = useState({
     recipient: "",
     subject: "",
     message: "",
-    status: "draft",
+    status: "",
   });
 
   const { recipient, subject, message, status } = formData;
@@ -16,12 +17,11 @@ function WriteEmail() {
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async () => {
     try {
       const res = await axios.post(
         "http://localhost:5000/api/emails/send",
-        formData,
+        { ...formData, status },
         {
           headers: {
             "x-auth-token": localStorage.getItem("token"),
@@ -30,73 +30,68 @@ function WriteEmail() {
       );
       console.log(res.data);
       navigate("/inbox");
+      closeModal(); // Close modal after sending
     } catch (err) {
       console.error(err.response.data);
     }
   };
 
+  const handleSend = () => {
+    setFormData({ ...formData, status: "sent" }); // Update status to "sent"
+    onSubmit(); // Call onSubmit function manually
+  };
+
+  const handleSaveAsDraft = () => {
+    setFormData({ ...formData, status: "draft" }); // Update status to "draft"
+    onSubmit(); // Call onSubmit function manually
+  };
+
   return (
-    <form onSubmit={onSubmit} style={{ maxWidth: "600px", margin: "auto" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Write Email</h2>
-      <input
-        type="text"
-        name="recipient"
-        value={recipient}
-        onChange={onChange}
-        placeholder="Recipient"
-        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
-        required
-      />
-      <input
-        type="text"
-        name="subject"
-        value={subject}
-        onChange={onChange}
-        placeholder="Subject"
-        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
-        required
-      />
-      <textarea
-        name="message"
-        value={message}
-        onChange={onChange}
-        placeholder="Message"
-        style={{
-          width: "100%",
-          padding: "10px",
-          marginBottom: "10px",
-          minHeight: "200px",
-        }}
-        required
-      ></textarea>
-      <button
-        type="submit"
-        style={{
-          padding: "10px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          marginRight: "10px",
-          cursor: "pointer",
-        }}
-        onClick={() => setFormData({ ...formData, status: "sent" })}
-      >
-        Send
-      </button>
-      <button
-        type="submit"
-        style={{
-          padding: "10px",
-          backgroundColor: "#f44336",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-        onClick={() => setFormData({ ...formData, status: "draft" })}
-      >
-        Save as Draft
-      </button>
-    </form>
+    <div className="modal">
+      <div className="modal-content">
+        <div className="button-group">
+          <button type="button" onClick={handleSend}>
+            Send
+          </button>
+          <button
+            type="button"
+            onClick={handleSaveAsDraft}
+            className="cancel-button"
+          >
+            Save as Draft
+          </button>
+          <span className="close" onClick={closeModal}>
+            &times;
+          </span>
+        </div>
+        <form onSubmit={(e) => e.preventDefault()} className="write-email-form">
+          <h2>Write Email</h2>
+          <input
+            type="text"
+            name="recipient"
+            value={recipient}
+            onChange={onChange}
+            placeholder="Recipient"
+            required
+          />
+          <input
+            type="text"
+            name="subject"
+            value={subject}
+            onChange={onChange}
+            placeholder="Subject"
+            required
+          />
+          <textarea
+            name="message"
+            value={message}
+            onChange={onChange}
+            placeholder="Message"
+            required
+          ></textarea>
+        </form>
+      </div>
+    </div>
   );
 }
 

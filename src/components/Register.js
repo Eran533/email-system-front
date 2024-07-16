@@ -1,22 +1,36 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import "./css/Register.css";
 
 function Register() {
   const [formData, setFormData] = useState({
-    username: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
+    repeatPassword: "",
   });
 
-  const { username, email, password } = formData;
+  const [passwordError, setPasswordError] = useState("");
+  const { firstName, lastName, email, password, repeatPassword } = formData;
   const navigate = useNavigate();
 
-  const onChange = (e) =>
+  const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (e.target.name === "password" || e.target.name === "repeatPassword") {
+      setPasswordError("");
+    }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (password !== repeatPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
     try {
       const res = await axios.post(
         "http://localhost:5000/api/users/register",
@@ -34,63 +48,68 @@ function Register() {
   };
 
   return (
-    <form onSubmit={onSubmit} style={{ maxWidth: "400px", margin: "auto" }}>
-      <h2 style={{ textAlign: "center" }}>Register</h2>
-      <input
-        type="text"
-        name="username"
-        value={username}
-        onChange={onChange}
-        placeholder="Username"
-        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
-        required
-      />
+    <form onSubmit={onSubmit} className="register-form">
+      <div className="form-header">
+        <FontAwesomeIcon icon={faArrowLeft} onClick={handleLoginBtn} />
+        <h2>Sign-Up</h2>
+      </div>
+      <div className="name-inputs">
+        <div className="name-input">
+          <label>First Name:</label>
+          <input
+            type="text"
+            name="firstName"
+            value={firstName}
+            onChange={onChange}
+            placeholder="First Name"
+            required
+          />
+        </div>
+        <div className="name-input">
+          <label>Last Name:</label>
+          <input
+            type="text"
+            name="lastName"
+            value={lastName}
+            onChange={onChange}
+            placeholder="Last Name"
+            required
+          />
+        </div>
+      </div>
+      <label>Email:</label>
       <input
         type="email"
         name="email"
         value={email}
         onChange={onChange}
         placeholder="Email"
-        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
         required
       />
+      <label>Password:</label>
       <input
         type="password"
         name="password"
         value={password}
         onChange={onChange}
         placeholder="Password"
-        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
         required
       />
-      <button
-        type="submit"
-        style={{
-          width: "100%",
-          padding: "10px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        Register
-      </button>
-      <p></p>
-      <button
-        type="submit"
-        style={{
-          width: "100%",
-          padding: "10px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-        onClick={handleLoginBtn}
-      >
-        Login
-      </button>
+      <label>Repeat Password:</label>
+      <input
+        type="password"
+        name="repeatPassword"
+        value={repeatPassword}
+        onChange={onChange}
+        placeholder="Repeat Password"
+        required
+      />
+      {passwordError && <p className="error-message">{passwordError}</p>}
+      <div className="btn-group">
+        <button type="submit" className="register-btn">
+          Register
+        </button>
+      </div>
     </form>
   );
 }

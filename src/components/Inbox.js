@@ -1,108 +1,150 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FaInbox, FaPaperPlane, FaDraftingCompass } from "react-icons/fa";
+import "./css/Inbox.css";
+import WriteEmail from "./WriteEmail";
 
 function Inbox() {
   const [sentEmails, setSentEmails] = useState([]);
+  const [recivedEmails, setRecivedEmails] = useState([]);
   const [draftEmails, setDraftEmails] = useState([]);
+  const [sentEmailsInbox, setSentEmailsInbox] = useState(true);
+  const [draftEmailsInbox, setDraftEmailsInbox] = useState(false);
+  const [recivedEmailsInbox, setRecivedEmailsInbox] = useState(false);
+  const [showWriteEmailModal, setShowWriteEmailModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchSentEmails = async () => {
+    const fetchEmails = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/emails/inbox", {
           headers: {
             "x-auth-token": localStorage.getItem("token"),
           },
         });
-        const filteredSentEmails = res.data.filter(
-          (email) => email.status === "sent"
-        );
-        const filteredDraftEmails = res.data.filter(
+        console.log(res);
+        const sentEmails = res.data.sent;
+        const receivedEmails = res.data.received;
+        const draftEmails = res.data.sent.filter(
           (email) => email.status === "draft"
         );
-        setSentEmails(filteredSentEmails);
-        setDraftEmails(filteredDraftEmails);
+        setSentEmails(sentEmails);
+        setRecivedEmails(receivedEmails);
+        setDraftEmails(draftEmails);
       } catch (err) {
         console.error(err.response.data);
       }
     };
-
-    fetchSentEmails();
+    fetchEmails();
   }, []);
 
-  const handleLogout = () => {
-    navigate("/");
+  const handleWriteMail = () => {
+    setShowWriteEmailModal(true); // Show modal on click
   };
 
-  const handleWriteMail = () => {
-    navigate("/write-email");
+  const handleInbox = () => {
+    setSentEmailsInbox(true);
+    setRecivedEmailsInbox(false);
+    setDraftEmailsInbox(false);
+  };
+
+  const handleRecived = () => {
+    setSentEmailsInbox(false);
+    setRecivedEmailsInbox(true);
+    setDraftEmailsInbox(false);
+  };
+
+  const handleDrafts = () => {
+    setSentEmailsInbox(false);
+    setRecivedEmailsInbox(false);
+    setDraftEmailsInbox(true);
+  };
+
+  const closeModal = () => {
+    setShowWriteEmailModal(false); // Close modal function
   };
 
   return (
-    <div style={{ maxWidth: "800px", margin: "auto", padding: "20px" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Inbox</h2>
-      <div style={{ marginBottom: "10px" }}>
-        <button
-          style={{
-            padding: "10px",
-            backgroundColor: "#4CAF50",
-            color: "white",
-            border: "none",
-            marginRight: "10px",
-            cursor: "pointer",
-          }}
-          onClick={handleWriteMail}
-        >
-          Write Email
-        </button>
-        <button
-          style={{
-            padding: "10px",
-            backgroundColor: "#f44336",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-          onClick={handleLogout}
-        >
-          Logout
+    <>
+      <div className="full-width-header">
+        <div className="nav-buttons">
+          <button
+            onClick={handleRecived}
+            className={recivedEmailsInbox ? "active" : ""}
+          >
+            <FaInbox /> Inbox
+          </button>
+          <button
+            onClick={handleDrafts}
+            className={draftEmailsInbox ? "active" : ""}
+          >
+            <FaPaperPlane /> Drafts
+          </button>
+          <button
+            onClick={handleInbox}
+            className={sentEmailsInbox ? "active" : ""}
+          >
+            <FaDraftingCompass /> Outbox
+          </button>
+        </div>
+        <button onClick={handleWriteMail} className="write-mail-btn">
+          New Mail
         </button>
       </div>
-      <h1>Inbox</h1>
-      <ul style={{ listStyleType: "none", padding: 0 }}>
-        {sentEmails.map((email) => (
-          <li
-            key={email._id}
-            style={{
-              marginBottom: "20px",
-              padding: "10px",
-              border: "1px solid #ddd",
-            }}
-          >
-            <h3 style={{ marginBottom: "10px" }}>{email.subject}</h3>
-            <h3 style={{ marginBottom: "10px" }}>{email.sender}</h3>
-            <p>{email.message}</p>
-          </li>
-        ))}
-      </ul>
-      <h1>Draft Mails</h1>
-      <ul style={{ listStyleType: "none", padding: 0 }}>
-        {draftEmails.map((email) => (
-          <li
-            key={email._id}
-            style={{
-              marginBottom: "20px",
-              padding: "10px",
-              border: "1px solid #ddd",
-            }}
-          >
-            <h3 style={{ marginBottom: "10px" }}>{email.subject}</h3>
-            <p>{email.message}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+      <div className="inbox-container">
+        {sentEmailsInbox && (
+          <>
+            <h2>Sent Mails</h2>
+            <ul className="email-list">
+              {sentEmails.map((email) => (
+                <li key={email._id} className="email-item">
+                  <h3>{email.subject}</h3>
+                  <h3>{email.recipient}</h3>
+                  <p>{email.message}</p>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        {recivedEmailsInbox && (
+          <>
+            <h2>received Mails</h2>
+            <ul className="email-list">
+              {recivedEmails.map((email) => (
+                <li key={email._id} className="email-item">
+                  <h3>{email.subject}</h3>
+                  <p>{email.message}</p>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        {draftEmailsInbox && (
+          <>
+            <ul className="email-list">
+              {draftEmails.map((email) => (
+                <li key={email._id} className="email-item">
+                  <h3>{email.subject}</h3>
+                  <p>{email.message}</p>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+      {showWriteEmailModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={closeModal}>
+              &times;
+            </span>
+            <WriteEmail closeModal={closeModal} />{" "}
+            {/* Pass closeModal function as prop */}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
