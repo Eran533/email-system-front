@@ -17,11 +17,25 @@ function WriteEmail({ closeModal, updateEmails }) {
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = async () => {
+  const handleSend = () => {
+    const updatedFormData = { ...formData, status: "sent" };
+    setFormData(updatedFormData);
+
+    onSubmit(updatedFormData);
+  };
+
+  const handleSaveAsDraft = () => {
+    const updatedFormData = { ...formData, status: "draft" };
+    setFormData(updatedFormData);
+
+    onSubmit(updatedFormData);
+  };
+
+  const onSubmit = async (data) => {
     try {
       const res = await axios.post(
         "http://localhost:5000/api/emails/send",
-        { ...formData, status },
+        data,
         {
           headers: {
             "x-auth-token": localStorage.getItem("token"),
@@ -30,20 +44,10 @@ function WriteEmail({ closeModal, updateEmails }) {
       );
       navigate("/inbox");
       closeModal();
-      updateEmails(); // Call updateEmails to fetch the latest emails
+      updateEmails();
     } catch (err) {
       console.error(err.response.data);
     }
-  };
-
-  const handleSend = () => {
-    setFormData({ ...formData, status: "sent" });
-    onSubmit();
-  };
-
-  const handleSaveAsDraft = () => {
-    setFormData({ ...formData, status: "draft" });
-    onSubmit();
   };
 
   return (

@@ -96,7 +96,7 @@
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  max-height: 400px; /* Adjust max height as needed */
+  max-height: 400px;
   word-wrap: break-word;
 }
 
@@ -122,5 +122,22 @@
   font-size: 14px;
   border-radius: 5px;
   border: 1px solid #ccc;
-  width: 300px; /* Adjust width as needed */
+  width: 300px;
+}
+
+.email-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-block;
+  text-align: center;
+  line-height: 40px;
+  margin-right: 10px;
+  background-color: #3498db;
+}
+
+.initials {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
 }

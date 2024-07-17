@@ -35,17 +35,17 @@
 
 .btn-group {
   display: flex;
-  align-items: center; /* Align items vertically */
+  align-items: center;
 }
 
 .btn-divider {
-  margin: 0 5px; /* Increased spacing around the divider */
-  font-size: 30px; /* Increased font size of the divider */
+  margin: 0 5px;
+  font-size: 30px;
 }
 
 .login-btn,
 .register-btn {
-  flex: 1; /* Equal width for buttons */
+  flex: 1;
   padding: 10px;
   border: none;
   border-radius: 4px;

@@ -9,21 +9,19 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-/* Modal content */
 .modal-content {
-  background-color: #fefefe; /* White background */
+  background-color: #fefefe;
   padding: 20px;
-  max-width: 600px; /* Adjust width as needed */
-  width: 100%; /* Ensure it takes full width up to max-width */
+  max-width: 600px;
+  width: 100%;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   position: relative;
 }
 
-/* Close button (X) */
 .close {
   color: #aaa;
   font-size: 28px;
@@ -40,7 +38,6 @@
   text-decoration: none;
 }
 
-/* Form inside the modal */
 .write-email-form {
   display: flex;
   flex-direction: column;
@@ -75,7 +72,7 @@
 .button-group .left-buttons,
 .button-group .right-buttons {
   display: flex;
-  gap: 10px; /* Add space between buttons */
+  gap: 10px;
 }
 
 .button-group button {
@@ -91,13 +88,13 @@
 }
 
 .button-group .send-button:hover {
-  background-color: #007bb5; /* Darker blue on hover */
+  background-color: #007bb5;
 }
 
 .button-group .cancel-button {
-  background-color: #f44336; /* Red color for cancel button */
+  background-color: #f44336;
 }
 
 .button-group .cancel-button:hover {
-  background-color: #d32f2f; /* Darker red on hover */
+  background-color: #d32f2f;
 }

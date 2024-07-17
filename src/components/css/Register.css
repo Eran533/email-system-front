@@ -11,11 +11,11 @@
 .form-header {
   display: flex;
   align-items: center;
-  margin-bottom: 20px; /* Adjust spacing between header and inputs */
+  margin-bottom: 20px;
 }
 
 .form-header h2 {
-  margin-left: 10px; /* Adjust spacing between icon and text */
+  margin-left: 10px;
 }
 
 .name-inputs {
@@ -24,7 +24,7 @@
 }
 
 .name-input {
-  width: 48%; /* Adjust width of name inputs */
+  width: 48%;
 }
 
 .register-form label {
@@ -43,7 +43,7 @@
 
 .btn-group {
   display: flex;
-  justify-content: flex-end; /* Align button to the right */
+  justify-content: flex-end;
 }
 
 .register-btn {
