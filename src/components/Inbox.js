@@ -122,6 +122,21 @@ function Inbox() {
     setSelectedEmail(email);
   };
 
+  const convertToNormalDateTime = (isoDate) => {
+    const date = new Date(isoDate);
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false,
+      timeZone: "UTC",
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
+
   return (
     <>
       <div className="full-width-header">
@@ -232,8 +247,11 @@ function Inbox() {
             <h3>
               {selectedEmail.firstName} {selectedEmail.lastName}
             </h3>
+            <div className="email-header">
+              <h2>{selectedEmail.subject}</h2>
+              <p>{convertToNormalDateTime(selectedEmail.timestamp)}</p>
+            </div>
             <h3>To: {selectedEmail.recipient}</h3>
-            <h2>{selectedEmail.subject}</h2>
             <p>{selectedEmail.message}</p>
           </div>
         )}
